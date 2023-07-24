@@ -70,6 +70,7 @@ AuthController.post("/register", async (req, res, next) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
+
     const accessToken = generateAccessToken(user);
 
     res.json({
