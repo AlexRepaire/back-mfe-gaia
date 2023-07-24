@@ -9,11 +9,11 @@ const AuthController = Router();
 const userService = new UsersService();
 
 /**
- * @route GET api/auth
+ * @route POST api/auth
  * @description connection
  * @access Public
  */
-AuthController.get("/login", async (req, res, next) => {
+AuthController.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
