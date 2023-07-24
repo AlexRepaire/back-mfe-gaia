@@ -1,20 +1,16 @@
 import cors from "cors";
 import helmet from "helmet";
 import express from "express";
-import { UnknownRoutesHandler } from "./middlewares/unknownRoutes.handler";
 import { ExceptionsHandler } from "./middlewares/exceptions.handler";
 import { config } from "./config";
 import UsersController from "./resources/users";
 import AuthController from "./resources/auth";
+import UnknownRoutesHandler from "./middlewares/unknownRoutes.handler";
 
 const app = express();
 
 app.use(express.json());
 
-/**
- * On dit à Express que l'on souhaite autoriser tous les noms de domaines
- * à faire des requêtes sur notre API.
- */
 app.use(cors());
 app.use(helmet());
 
@@ -30,7 +26,6 @@ app.all("*", UnknownRoutesHandler);
 
 /**
  * Gestion des erreurs
- * /!\ Cela doit être le dernier `app.use`
  */
 app.use(ExceptionsHandler);
 
