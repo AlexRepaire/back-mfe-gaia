@@ -1,5 +1,5 @@
 //import { User } from "~/types/user";
-import { PrismaClient, Users } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { GetResult } from "@prisma/client/runtime/library";
 import { User } from "~/types/user";
 import { NotFoundException } from "~/utils/exceptions";
@@ -13,7 +13,7 @@ export class UsersService {
    * Chercher tous les utilisateurs
    */
   async findAll(): Promise<any> {
-    return await prisma.users
+    await prisma.users
       .findMany()
       .then((data) => {
         return JSON.stringify(data);
@@ -29,7 +29,7 @@ export class UsersService {
    * @param id - une variable correspondant à l'id de l'utilisateur qu'on veut récuperer.
    */
   async findUserById(id: string): Promise<any> {
-    return await prisma.users
+    await prisma.users
       .findUnique({
         where: {
           id,
@@ -49,7 +49,7 @@ export class UsersService {
    * @param id - une variable correspondant à l'email de l'utilisateur qu'on veut récuperer.
    */
   async findUserByEmail(email: string): Promise<any> {
-    return await prisma.users
+    await prisma.users
       .findUnique({
         where: {
           email,
@@ -68,10 +68,18 @@ export class UsersService {
    * Créé un utilisateur avec un email et un mot de passe
    * @param userData - Un objet correspondant à un utilisateur.
    */
-  async createUserByEmailAndPassword(userData: Users): Promise<any> {
-    userData.password = bcrypt.hashSync(userData.password, 12);
-    return await db.users.create({
-      data: userData,
+  async createUserByEmailAndPassword(
+    email: string,
+    password: string
+  ): Promise<any> {
+    password = bcrypt.hashSync(password, 12);
+    return await prisma.users.create({
+      data: {
+        email,
+        password,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     });
   }
 

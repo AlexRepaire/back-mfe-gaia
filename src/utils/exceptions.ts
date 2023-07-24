@@ -43,3 +43,15 @@ export class BadRequestException extends Exception {
     super(error, 400);
   }
 }
+
+/**
+ * Création d'une 409
+ */
+export class ConflictException extends Exception {
+  /**
+   * On appelle le `constructor` de la classe parente `Exception`
+   */
+  constructor(error: string) {
+    super(error, 409);
+  }
+}

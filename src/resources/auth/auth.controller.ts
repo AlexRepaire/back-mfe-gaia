@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { BadRequestException } from "~/utils/exceptions";
+import { BadRequestException, ConflictException } from "~/utils/exceptions";
 import { UsersService } from "../users/users.service";
 import bcrypt from "bcrypt";
 import { generateAccessToken } from "~/utils/jwt";
@@ -59,17 +59,10 @@ AuthController.post("/register", async (req, res, next) => {
     const existingUser = await userService.findUserByEmail(email);
 
     if (existingUser) {
-      throw new Error("Email already in use.");
+      throw new ConflictException("Email already in use.");
     }
 
-    const user = userService.createUserByEmailAndPassword({
-      email,
-      password,
-      id: "",
-      name: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    const user = userService.createUserByEmailAndPassword(email, password);
 
     const accessToken = generateAccessToken(user);
 

@@ -1,8 +1,7 @@
 export interface User {
-  id: String;
-  email: String;
-  password: String;
-  name: String;
+  id: string;
+  email: string;
+  password: string;
   createdAt: Date;
   updatedAt: Date;
 }
