@@ -23,13 +23,13 @@ AuthController.get("/login", async (req, res, next) => {
     const existingUser = await userService.findUserByEmail(email);
 
     if (!existingUser) {
-      throw new BadRequestException("Invalid login credentials.");
+      throw new BadRequestException("User don't exist");
     }
 
     const validPassword = await bcrypt.compare(password, existingUser.password);
 
     if (!validPassword) {
-      throw new BadRequestException("Invalid login credentials.");
+      throw new BadRequestException("Password invalid.");
     }
 
     const accessToken = generateAccessToken(existingUser);
@@ -73,5 +73,12 @@ AuthController.post("/register", async (req, res, next) => {
     next(err);
   }
 });
+
+/**
+ * @route POST api/auth
+ * @description forgetPassword
+ * @access Private
+ */
+AuthController.post("/forget-password", async (req, res) => {});
 
 export { AuthController };

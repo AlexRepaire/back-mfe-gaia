@@ -16,7 +16,7 @@ export class UsersService {
     await prisma.users
       .findMany()
       .then((data) => {
-        return JSON.stringify(data);
+        return data;
       })
       .catch((error) => {
         throw new NotFoundException(error);
@@ -36,7 +36,7 @@ export class UsersService {
         },
       })
       .then((data) => {
-        return JSON.stringify(data);
+        return data;
       })
       .catch((error) => {
         throw new NotFoundException(error);
@@ -49,14 +49,14 @@ export class UsersService {
    * @param id - une variable correspondant à l'email de l'utilisateur qu'on veut récuperer.
    */
   async findUserByEmail(email: string): Promise<any> {
-    await prisma.users
+    return await prisma.users
       .findUnique({
         where: {
           email,
         },
       })
       .then((data) => {
-        return JSON.stringify(data);
+        return data;
       })
       .catch((error) => {
         throw new NotFoundException(error);
