@@ -8,12 +8,14 @@ import { db } from "~/utils/db";
 
 const prisma = new PrismaClient();
 
+//TODO : CHECK RSQL
+
 export class UsersService {
   /**
    * Chercher tous les utilisateurs
    */
   async findAll(): Promise<any> {
-    await prisma.users
+    return await prisma.users
       .findMany()
       .then((data) => {
         return data;
@@ -29,7 +31,7 @@ export class UsersService {
    * @param id - une variable correspondant à l'id de l'utilisateur qu'on veut récuperer.
    */
   async findUserById(id: string): Promise<any> {
-    await prisma.users
+    return await prisma.users
       .findUnique({
         where: {
           id,

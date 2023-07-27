@@ -1,3 +1,4 @@
+import { ValidationError } from "express-validator";
 import { ApiException } from "../types/exceptions";
 
 /**
@@ -11,47 +12,41 @@ import { ApiException } from "../types/exceptions";
  * Ici `this.error = error` et `this.status = status`
  */
 class Exception implements ApiException {
-  error: string;
+  error: string | string[] | ValidationError[];
   status: number;
 
-  constructor(error: string, status: number) {
+  constructor(error: string | string[] | ValidationError[], status: number) {
     this.error = error;
     this.status = status;
   }
 }
 
-/**
- * Création d'une 404
- */
 export class NotFoundException extends Exception {
-  /**
-   * On appelle le `constructor` de la classe parente `Exception`
-   */
   constructor(error: string) {
     super(error, 404);
   }
 }
 
-/**
- * Création d'une 400
- */
 export class BadRequestException extends Exception {
-  /**
-   * On appelle le `constructor` de la classe parente `Exception`
-   */
   constructor(error: string) {
     super(error, 400);
   }
 }
 
-/**
- * Création d'une 409
- */
 export class ConflictException extends Exception {
-  /**
-   * On appelle le `constructor` de la classe parente `Exception`
-   */
   constructor(error: string) {
     super(error, 409);
+  }
+}
+
+export class ErrorSchemaEntityException extends Exception {
+  constructor(error: string | ValidationError[]) {
+    super(error, 422);
+  }
+}
+
+export class UnauthorizedException extends Exception {
+  constructor(error: string) {
+    super(error, 401);
   }
 }

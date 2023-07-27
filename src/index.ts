@@ -3,8 +3,8 @@ import helmet from "helmet";
 import express from "express";
 import { ExceptionsHandler } from "./middlewares/exceptions.handler";
 import { config } from "./config";
-import UsersController from "./resources/users";
-import AuthController from "./resources/auth";
+import UsersController from "./resources/controllers/users";
+import AuthController from "./resources/controllers/auth";
 import UnknownRoutesHandler from "./middlewares/unknownRoutes.handler";
 
 const app = express();
