@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from "express";
 import { BadRequestException, NotFoundException } from "~/utils/exceptions";
 import { isAuthenticated } from "../../../middlewares/protectedRoutes";
 import UsersService from "~/resources/services/users";
-import validationResultHandler from "~/resources/validations/validationResult";
 
 const UsersController = Router();
 
@@ -17,7 +16,9 @@ UsersController.get(
   "/",
   isAuthenticated,
   async (req: Request, res: Response) => {
-    return res.status(200).json(await service.findAll());
+    const query = req.query;
+
+    return res.status(200).json(await service.findAll(query));
   }
 );
 
@@ -30,33 +31,16 @@ UsersController.get(
   "/:id",
   [isAuthenticated],
   async (req: Request, res: Response, next: NextFunction) => {
-    //TODO : corriger recup id
-    try {
-      validationResultHandler(req);
-      const id = req.params.id;
-      console.log("id=>" + id);
+    const id = req.params.id;
 
-      const user = await service.findUserById(id);
+    const user = await service.findUserById(id);
 
-      if (!user) {
-        throw new NotFoundException("Utilisateur introuvable");
-      }
-      return res.status(200).json(user);
-    } catch (error) {
-      next(error);
+    if (!user) {
+      throw new NotFoundException("Utilisateur introuvable");
     }
-  }
-);
 
-/**
- * @route POST api/users
- * @description Créer un utilisateur
- * @access Private
- */
-UsersController.post(
-  "/",
-  isAuthenticated,
-  async (req: Request, res: Response) => {}
+    return res.status(200).json(user);
+  }
 );
 
 /**

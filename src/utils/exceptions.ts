@@ -50,3 +50,15 @@ export class UnauthorizedException extends Exception {
     super(error, 401);
   }
 }
+
+export class ForbiddenException extends Exception {
+  constructor(error: string) {
+    super(error, 403);
+  }
+}
+
+export class InternalServerErrorException extends Exception {
+  constructor(error: string) {
+    super(error, 500);
+  }
+}

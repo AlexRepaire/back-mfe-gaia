@@ -14,9 +14,11 @@ export class UsersService {
   /**
    * Chercher tous les utilisateurs
    */
-  async findAll(): Promise<any> {
+  async findAll(filter: {}): Promise<any> {
     return await prisma.users
-      .findMany()
+      .findMany({
+        where: filter,
+      })
       .then((data) => {
         return data;
       })
@@ -72,7 +74,8 @@ export class UsersService {
    */
   async createUserByEmailAndPassword(
     email: string,
-    password: string
+    password: string,
+    langage: string
   ): Promise<any> {
     password = bcrypt.hashSync(password, 12);
     return await prisma.users.create({
@@ -81,6 +84,7 @@ export class UsersService {
         password,
         createdAt: new Date(),
         updatedAt: new Date(),
+        langage,
       },
     });
   }

@@ -9,4 +9,10 @@ const generateAccessToken = (user: any) => {
   });
 };
 
-export { generateAccessToken };
+const hashTokenPasswordReset = (email: string) => {
+  return jwt.sign({ userEmail: email }, process.env.JWT_RESET_PASSWORD!, {
+    expiresIn: "10m",
+  });
+};
+
+export { generateAccessToken, hashTokenPasswordReset };

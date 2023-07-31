@@ -12,15 +12,21 @@ datasource db {
 
 model Users {
   id  String  @id @default(uuid())
-  email String  @unique
-  password  String
+  name String
+  email String @unique
+  password String
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  // token Token?
+  posts Posts[]
 }
 
-// model Token {
-//   token String
-//   createdAt DateTime @default(now())
-//   userId String @relation(fields: [])
-// }
+model Posts {
+  id  String  @id @default(uuid())
+  title String
+  content String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  author Users @relation(fields: [authorId], references: [id])
+  authorId String
+}
+

@@ -35,14 +35,6 @@ const userDataResetPasswordValidateSchemaBased = checkSchema({
     exists: { errorMessage: "Email is required" },
     isEmail: { errorMessage: "Provide valid email" },
   },
-  password: {
-    exists: { errorMessage: "Password is required" },
-    isString: { errorMessage: "password should be string" },
-    isLength: {
-      options: { min: 3 },
-      errorMessage: "Password should be at least 3 characters",
-    },
-  },
 });
 
 /** ALTERNATIVE CI-DESSOUS */

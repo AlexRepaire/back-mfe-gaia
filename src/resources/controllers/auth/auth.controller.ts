@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { BadRequestException, ConflictException } from "~/utils/exceptions";
 import bcrypt from "bcrypt";
-import { generateAccessToken } from "~/utils/jwt";
+import { generateAccessToken, hashTokenPasswordReset } from "~/utils/jwt";
 import UsersService from "~/resources/services/users";
 import {
   userDataLoginValidateSchemaBased,
@@ -9,6 +9,7 @@ import {
   userDataResetPasswordValidateSchemaBased,
 } from "~/resources/validations/user.validation";
 import validationResultHandler from "~/resources/validations/validationResult";
+import sendEmail from "~/utils/sendEmail";
 
 const AuthController = Router();
 
@@ -64,7 +65,7 @@ AuthController.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       validationResultHandler(req);
-      const { email, password } = req.body;
+      const { email, password, langage } = req.body;
 
       const existingUser = await userService.findUserByEmail(email);
 
@@ -72,7 +73,11 @@ AuthController.post(
         throw new ConflictException("Email already in use.");
       }
 
-      const user = userService.createUserByEmailAndPassword(email, password);
+      const user = userService.createUserByEmailAndPassword(
+        email,
+        password,
+        langage
+      );
 
       const accessToken = generateAccessToken(user);
 
@@ -96,27 +101,24 @@ AuthController.post(
   async (req: Request, res: Response) => {
     try {
       validationResultHandler(req);
+      const { email } = req.body;
 
-      const user = await userService.findUserByEmail(req.body.email);
+      const user = await userService.findUserByEmail(email);
 
-      if (!user)
+      if (!user) {
         throw new BadRequestException("user with given email doesn't exist");
+      }
 
-      // let token = await Token.findOne({ userId: user.id });
-      // if (!token) {
-      //     token = await new Token({
-      //         userId: user._id,
-      //         token: crypto.randomBytes(32).toString("hex"),
-      //     }).save();
-      // }
+      let token = hashTokenPasswordReset(email);
+      const link = `${process.env.BASE_URL_DEV}/auth/password-reset/${user.id}/${token}`;
+      await sendEmail(user.email, "Password reset", link);
 
-      // const link = `${process.env.BASE_URL}/password-reset/${user._id}/${token.token}`;
-      // await sendEmail(user.email, "Password reset", link);
-
-      res.send("password reset link sent to your email account");
+      res.status(200).json({
+        message: "password reset link sent to your email account",
+        status: 200,
+      });
     } catch (error) {
-      res.send("An error occured");
-      console.log(error);
+      throw new BadRequestException("An error occured");
     }
   }
 );
@@ -126,6 +128,25 @@ AuthController.post(
  * @description reset user password
  * @access Public
  */
-AuthController.post("/password-reset/:userId/:token", async (req, res) => {});
+AuthController.post("/password-reset/:userId/:token", async (req, res) => {
+  // try {
+  //   const { userId, token } = req.params;
+  //   const { password } = req.body;
+  //   const user = await userService.findUserById(userId);
+  //   if (!user) throw new BadRequestException("user with given id doesn't exist");
+  //   const decodedToken = jwt.verify(token, process.env.JWT_RESET_PASSWORD!);
+  //   if (decodedToken.userEmail !== user.email)
+  //     throw new BadRequestException("invalid token");
+  //   const salt = await bcrypt.genSalt(10);
+  //   const hashedPassword = await bcrypt.hash(password, salt);
+  //   await userService.updateUserPassword(user.id, hashedPassword);
+  //   res.status(200).json({
+  //     message: "password updated successfully",
+  //     status: 200,
+  //   });
+  // } catch (error) {
+  //   throw new BadRequestException("An error occured");
+  // }
+});
 
 export { AuthController };
