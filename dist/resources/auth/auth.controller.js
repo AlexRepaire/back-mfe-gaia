@@ -31,7 +31,7 @@ AuthController.get("/login", async (req, res, next) => {
         if (!validPassword) {
             throw new exceptions_1.BadRequestException("Invalid login credentials.");
         }
-        const accessToken = (0, jwt_1.generateAccessToken)(existingUser);
+        const accessToken = await (0, jwt_1.generateAccessToken)(existingUser);
         res.json({
             accessToken,
         });
@@ -63,7 +63,7 @@ AuthController.post("/register", async (req, res, next) => {
             createdAt: new Date(),
             updatedAt: new Date(),
         });
-        const accessToken = (0, jwt_1.generateAccessToken)(user);
+        const accessToken =  await (0, jwt_1.generateAccessToken)(user);
         res.json({
             accessToken,
         });

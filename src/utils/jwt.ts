@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { Users } from "@prisma/client";
 
 dotenv.config();
 
-const generateAccessToken = (user: any) => {
+const generateAccessToken = (user: Users) => {
   return jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET!, {
     expiresIn: "5h",
   });

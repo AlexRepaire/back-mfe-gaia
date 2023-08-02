@@ -1,4 +1,6 @@
+import { ValidationError } from "express-validator";
+
 export interface ApiException {
-  error: any;
+  error: string | string[] | ValidationError[];
   status: number;
 }

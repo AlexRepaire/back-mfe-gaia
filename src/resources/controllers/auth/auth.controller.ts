@@ -65,7 +65,7 @@ AuthController.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       validationResultHandler(req);
-      const { email, password, langage } = req.body;
+      const { email, password, name } = req.body;
 
       const existingUser = await userService.findUserByEmail(email);
 
@@ -73,10 +73,10 @@ AuthController.post(
         throw new ConflictException("Email already in use.");
       }
 
-      const user = userService.createUserByEmailAndPassword(
+      const user = await userService.createUserByEmailAndPassword(
         email,
         password,
-        langage
+        name
       );
 
       const accessToken = generateAccessToken(user);

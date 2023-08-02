@@ -1,5 +1,5 @@
 //import { User } from "~/types/user";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Users } from "@prisma/client";
 import { GetResult } from "@prisma/client/runtime/library";
 import { User } from "~/types/user";
 import { NotFoundException } from "~/utils/exceptions";
@@ -14,7 +14,7 @@ export class UsersService {
   /**
    * Chercher tous les utilisateurs
    */
-  async findAll(filter: {}): Promise<any> {
+  async findAll(filter: {}): Promise<Users[]> {
     return await prisma.users
       .findMany({
         where: filter,
@@ -32,7 +32,7 @@ export class UsersService {
    * Chercher un utilisateur avec un ID
    * @param id - une variable correspondant à l'id de l'utilisateur qu'on veut récuperer.
    */
-  async findUserById(id: string): Promise<any> {
+  async findUserById(id: string): Promise<Users | null> {
     return await prisma.users
       .findUnique({
         where: {
@@ -52,7 +52,7 @@ export class UsersService {
    * Chercher un utilisateur par email
    * @param id - une variable correspondant à l'email de l'utilisateur qu'on veut récuperer.
    */
-  async findUserByEmail(email: string): Promise<any> {
+  async findUserByEmail(email: string): Promise<Users | null> {
     return await prisma.users
       .findUnique({
         where: {
@@ -75,8 +75,9 @@ export class UsersService {
   async createUserByEmailAndPassword(
     email: string,
     password: string,
-    langage: string
-  ): Promise<any> {
+    name: string
+    // TODO: Changer le type de la promesse pour le bon type
+  ): Promise<Users> {
     password = bcrypt.hashSync(password, 12);
     return await prisma.users.create({
       data: {
@@ -84,7 +85,7 @@ export class UsersService {
         password,
         createdAt: new Date(),
         updatedAt: new Date(),
-        langage,
+        name
       },
     });
   }

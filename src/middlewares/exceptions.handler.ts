@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { ApiException } from "~/types/exceptions";
 
 /**
  * Middleware de gestion globale des erreurs
@@ -10,7 +11,7 @@ import { NextFunction, Request, Response } from "express";
  *
  */
 export const ExceptionsHandler = (
-  err: any,
+  err: ApiException,
   req: Request,
   res: Response,
   next: NextFunction
